@@ -21,6 +21,8 @@ tl::expected<void, std::string> urlverify(std::string_view str);
 
 const char *errorToStatus(httpd_err_code_t error);
 
+esp_err_t webserver_prepare_response(httpd_req_t *req);
+
 esp_err_t webserver_resp_send_succ(httpd_req_t *req, const char *type, std::string_view body);
 esp_err_t webserver_resp_send_err(httpd_req_t *req, httpd_err_code_t error, const char *type, std::string_view body);
 

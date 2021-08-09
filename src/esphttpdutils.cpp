@@ -83,6 +83,14 @@ const char *errorToStatus(httpd_err_code_t error)
     }
 }
 
+esp_err_t webserver_prepare_response(httpd_req_t *req)
+{
+    CALL_AND_EXIT_ON_ERROR(httpd_resp_set_hdr, req, "Connection", "close")
+    CALL_AND_EXIT_ON_ERROR(httpd_resp_set_hdr, req, "Access-Control-Allow-Origin", "*")
+
+    return ESP_OK;
+}
+
 esp_err_t webserver_resp_send_succ(httpd_req_t *req, const char *type, std::string_view body)
 {
     CALL_AND_EXIT_ON_ERROR(httpd_resp_set_type, req, type)
