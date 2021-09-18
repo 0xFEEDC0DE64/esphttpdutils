@@ -7,14 +7,14 @@
 // 3rdparty lib includes
 #include <fmt/core.h>
 
-// local includes
+// 3rdparty lib includes
 #include "futurecpp.h"
 #include "espcppmacros.h"
 
 namespace esphttpdutils {
 namespace {
 constexpr const char * const TAG = "ESPHTTPDUTILS";
-}
+} // namespace
 
 void urldecode(char *dst, const char *src)
 {
@@ -61,28 +61,6 @@ tl::expected<void, std::string> urlverify(std::string_view str)
     return {};
 }
 
-const char *errorToStatus(httpd_err_code_t error)
-{
-    switch (error)
-    {
-    case HTTPD_501_METHOD_NOT_IMPLEMENTED:   return "501 Method Not Implemented";
-    case HTTPD_505_VERSION_NOT_SUPPORTED:    return "505 Version Not Supported";
-    case HTTPD_400_BAD_REQUEST:              return "400 Bad Request";
-    case HTTPD_401_UNAUTHORIZED:             return "401 Unauthorized";
-    case HTTPD_403_FORBIDDEN:                return "403 Forbidden";
-    case HTTPD_404_NOT_FOUND:                return "404 Not Found";
-    case HTTPD_405_METHOD_NOT_ALLOWED:       return "405 Method Not Allowed";
-    case HTTPD_408_REQ_TIMEOUT:              return "408 Request Timeout";
-    case HTTPD_414_URI_TOO_LONG:             return "414 URI Too Long";
-    case HTTPD_411_LENGTH_REQUIRED:          return "411 Length Required";
-    case HTTPD_431_REQ_HDR_FIELDS_TOO_LARGE: return "431 Request Header Fields Too Large";
-    default:
-        ESP_LOGW(TAG, "unknown httpd_err_code_t(%i)", std::to_underlying(error));
-        [[fallthrough]];
-    case HTTPD_500_INTERNAL_SERVER_ERROR:    return "500 Internal Server Error";
-    }
-}
-
 esp_err_t webserver_prepare_response(httpd_req_t *req)
 {
     CALL_AND_EXIT_ON_ERROR(httpd_resp_set_hdr, req, "Connection", "close")
@@ -91,21 +69,27 @@ esp_err_t webserver_prepare_response(httpd_req_t *req)
     return ESP_OK;
 }
 
-esp_err_t webserver_resp_send_succ(httpd_req_t *req, const char *type, std::string_view body)
+esp_err_t webserver_resp_send(httpd_req_t *req, ResponseStatus error, const char *type, std::string_view body)
 {
+    CALL_AND_EXIT_ON_ERROR(httpd_resp_set_status, req, toString(error))
     CALL_AND_EXIT_ON_ERROR(httpd_resp_set_type, req, type)
     CALL_AND_EXIT_ON_ERROR(httpd_resp_send, req, body.data(), body.size())
 
     return ESP_OK;
 }
 
-esp_err_t webserver_resp_send_err(httpd_req_t *req, httpd_err_code_t error, const char *type, std::string_view body)
+tl::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
 {
-    CALL_AND_EXIT_ON_ERROR(httpd_resp_set_status, req, errorToStatus(error))
-    CALL_AND_EXIT_ON_ERROR(httpd_resp_set_type, req, type)
-    CALL_AND_EXIT_ON_ERROR(httpd_resp_send, req, body.data(), body.size())
+    std::string query;
 
-    return ESP_OK;
+    if (const size_t queryLength = httpd_req_get_url_query_len(req))
+    {
+        query.resize(queryLength);
+        if (const auto result = httpd_req_get_url_query_str(req, query.data(), query.size() + 1); result != ESP_OK)
+            return tl::make_unexpected(fmt::format("httpd_req_get_url_query_str() failed with {}", esp_err_to_name(result)));
+    }
+
+    return query;
 }
 
 } // namespace esphttpdutils

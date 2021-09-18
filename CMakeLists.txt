@@ -1,9 +1,12 @@
 set(headers
     src/esphttpdutils.h
+    src/esphttpstatuscodes.h
+    src/htmlbuilder.h
 )
 
 set(sources
     src/esphttpdutils.cpp
+    src/esphttpstatuscodes.cpp
 )
 
 set(dependencies
