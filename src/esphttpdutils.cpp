@@ -54,6 +54,9 @@ void urldecode(char *dst, const char *src)
 
 tl::expected<void, std::string> urlverify(std::string_view str)
 {
+    if (str.empty())
+        return tl::make_unexpected("empty url is not valid");
+
     http_parser_url puri;
     http_parser_url_init(&puri);
     if (const auto result = http_parser_parse_url(str.data(), str.size(), 0, &puri); result != 0)
