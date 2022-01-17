@@ -28,4 +28,6 @@ esp_err_t webserver_resp_send(httpd_req_t *req, ResponseStatus error, const char
 
 tl::expected<std::string, std::string> webserver_get_query(httpd_req_t *req);
 
+std::string toString(httpd_ws_type_t val);
+
 } // namespace esphttpdutils

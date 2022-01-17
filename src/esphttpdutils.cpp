@@ -95,5 +95,21 @@ tl::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
     return query;
 }
 
+std::string toString(httpd_ws_type_t val)
+{
+    switch (val)
+    {
+    case HTTPD_WS_TYPE_CONTINUE: return "HTTPD_WS_TYPE_CONTINUE"; break;
+    case HTTPD_WS_TYPE_TEXT:     return "HTTPD_WS_TYPE_TEXT";     break;
+    case HTTPD_WS_TYPE_BINARY:   return "HTTPD_WS_TYPE_BINARY";   break;
+    case HTTPD_WS_TYPE_CLOSE:    return "HTTPD_WS_TYPE_CLOSE";    break;
+    case HTTPD_WS_TYPE_PING:     return "HTTPD_WS_TYPE_PING";     break;
+    case HTTPD_WS_TYPE_PONG:     return "HTTPD_WS_TYPE_PONG";     break;
+    default:
+        ESP_LOGW(TAG, "Unknown httpd_ws_type_t(%i)", std::to_underlying(val));
+        return fmt::format("Unknown httpd_ws_type_t({})", std::to_underlying(val));
+    }
+}
+
 } // namespace esphttpdutils
 
