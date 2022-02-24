@@ -11,7 +11,6 @@ set(sources
 
 set(dependencies
     esp_http_server
-    nghttp
 
     cpputils
     espchrono
