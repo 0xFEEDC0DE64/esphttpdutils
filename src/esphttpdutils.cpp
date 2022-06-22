@@ -1,5 +1,8 @@
 #include "esphttpdutils.h"
 
+// system includes
+#include <utility>
+
 // esp-idf includes
 #include <esp_log.h>
 #include <http_parser.h>
@@ -8,7 +11,6 @@
 #include <fmt/core.h>
 
 // 3rdparty lib includes
-#include "futurecpp.h"
 #include "espcppmacros.h"
 
 namespace esphttpdutils {
