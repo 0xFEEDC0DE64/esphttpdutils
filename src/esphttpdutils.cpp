@@ -11,7 +11,8 @@
 #include <fmt/core.h>
 
 // 3rdparty lib includes
-#include "espcppmacros.h"
+#include <futurecpp.h>
+#include <espcppmacros.h>
 
 namespace esphttpdutils {
 namespace {
