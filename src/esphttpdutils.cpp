@@ -54,15 +54,15 @@ void urldecode(char *dst, const char *src)
     *dst++ = '\0';
 }
 
-tl::expected<void, std::string> urlverify(std::string_view str)
+std::expected<void, std::string> urlverify(std::string_view str)
 {
     if (str.empty())
-        return tl::make_unexpected("empty url is not valid");
+        return std::unexpected("empty url is not valid");
 
     http_parser_url puri;
     http_parser_url_init(&puri);
     if (const auto result = http_parser_parse_url(str.data(), str.size(), 0, &puri); result != 0)
-        return tl::make_unexpected(fmt::format("http_parser_parse_url() failed with {}", result));
+        return std::unexpected(fmt::format("http_parser_parse_url() failed with {}", result));
     return {};
 }
 
@@ -83,7 +83,7 @@ esp_err_t webserver_resp_send(httpd_req_t *req, ResponseStatus error, const char
     return ESP_OK;
 }
 
-tl::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
+std::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
 {
     std::string query;
 
@@ -91,7 +91,7 @@ tl::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
     {
         query.resize(queryLength);
         if (const auto result = httpd_req_get_url_query_str(req, query.data(), query.size() + 1); result != ESP_OK)
-            return tl::make_unexpected(fmt::format("httpd_req_get_url_query_str() failed with {}", esp_err_to_name(result)));
+            return std::unexpected(fmt::format("httpd_req_get_url_query_str() failed with {}", esp_err_to_name(result)));
     }
 
     return query;
