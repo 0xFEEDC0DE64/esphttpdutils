@@ -67,9 +67,6 @@ const char *toString(ResponseStatus status)
     case ResponseStatus::TooManyRequests:               return "429 Too Many Requests";
     case ResponseStatus::RequestHeaderFieldsTooLarge:   return "431 Request Header Fields Too Large";
     case ResponseStatus::UnavailableForLegalReasons:    return "451 Unavailable For Legal Reasons";
-    default:
-        ESP_LOGW(TAG, "unknown httpd_err_code_t(%i)", std::to_underlying(status));
-    [[fallthrough]];
     case ResponseStatus::InternalServerError:           return "500 Internal Server Error";
     case ResponseStatus::NotImplemented:                return "501 Not Implemented";
     case ResponseStatus::BadGateway:                    return "502 Bad Gateway";
@@ -82,6 +79,9 @@ const char *toString(ResponseStatus status)
     case ResponseStatus::NotExtended:                   return "510 Not Extended";
     case ResponseStatus::NetworkAuthenticationRequired: return "511 Network Authentication Required";
     }
+
+    ESP_LOGW(TAG, "unknown httpd_err_code_t(%i)", std::to_underlying(status));
+    return "500 Internal Server Error";
 }
 
 } // namespace esphttpdutils

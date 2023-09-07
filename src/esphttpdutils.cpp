@@ -107,10 +107,9 @@ std::string toString(httpd_ws_type_t val)
     case HTTPD_WS_TYPE_CLOSE:    return "HTTPD_WS_TYPE_CLOSE";    break;
     case HTTPD_WS_TYPE_PING:     return "HTTPD_WS_TYPE_PING";     break;
     case HTTPD_WS_TYPE_PONG:     return "HTTPD_WS_TYPE_PONG";     break;
-    default:
-        ESP_LOGW(TAG, "Unknown httpd_ws_type_t(%i)", std::to_underlying(val));
-        return fmt::format("Unknown httpd_ws_type_t({})", std::to_underlying(val));
     }
+    ESP_LOGW(TAG, "Unknown httpd_ws_type_t(%i)", std::to_underlying(val));
+    return fmt::format("Unknown httpd_ws_type_t({})", std::to_underlying(val));
 }
 
 } // namespace esphttpdutils
