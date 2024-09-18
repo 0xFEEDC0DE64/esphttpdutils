@@ -2,13 +2,11 @@
 
 // system includes
 #include <utility>
+#include <format>
 
 // esp-idf includes
 #include <esp_log.h>
 #include <http_parser.h>
-
-// 3rdparty lib includes
-#include <fmt/core.h>
 
 // 3rdparty lib includes
 #include "espcppmacros.h"
@@ -62,7 +60,7 @@ std::expected<void, std::string> urlverify(std::string_view str)
     http_parser_url puri;
     http_parser_url_init(&puri);
     if (const auto result = http_parser_parse_url(str.data(), str.size(), 0, &puri); result != 0)
-        return std::unexpected(fmt::format("http_parser_parse_url() failed with {}", result));
+        return std::unexpected(std::format("http_parser_parse_url() failed with {}", result));
     return {};
 }
 
@@ -91,7 +89,7 @@ std::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
     {
         query.resize(queryLength);
         if (const auto result = httpd_req_get_url_query_str(req, query.data(), query.size() + 1); result != ESP_OK)
-            return std::unexpected(fmt::format("httpd_req_get_url_query_str() failed with {}", esp_err_to_name(result)));
+            return std::unexpected(std::format("httpd_req_get_url_query_str() failed with {}", esp_err_to_name(result)));
     }
 
     return query;
@@ -109,7 +107,7 @@ std::string toString(httpd_ws_type_t val)
     case HTTPD_WS_TYPE_PONG:     return "HTTPD_WS_TYPE_PONG";     break;
     }
     ESP_LOGW(TAG, "Unknown httpd_ws_type_t(%i)", std::to_underlying(val));
-    return fmt::format("Unknown httpd_ws_type_t({})", std::to_underlying(val));
+    return std::format("Unknown httpd_ws_type_t({})", std::to_underlying(val));
 }
 
 } // namespace esphttpdutils
