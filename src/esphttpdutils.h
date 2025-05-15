@@ -26,6 +26,8 @@ esp_err_t webserver_resp_send(httpd_req_t *req, ResponseStatus error, const char
 
 std::expected<std::string, std::string> webserver_get_query(httpd_req_t *req);
 
+#ifdef CONFIG_HTTPD_WS_SUPPORT
 std::string toString(httpd_ws_type_t val);
+#endif // CONFIG_HTTPD_WS_SUPPORT
 
 } // namespace esphttpdutils

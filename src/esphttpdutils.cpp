@@ -95,6 +95,7 @@ std::expected<std::string, std::string> webserver_get_query(httpd_req_t *req)
     return query;
 }
 
+#ifdef CONFIG_HTTPD_WS_SUPPORT
 std::string toString(httpd_ws_type_t val)
 {
     switch (val)
@@ -109,6 +110,7 @@ std::string toString(httpd_ws_type_t val)
     ESP_LOGW(TAG, "Unknown httpd_ws_type_t(%i)", std::to_underlying(val));
     return std::format("Unknown httpd_ws_type_t({})", std::to_underlying(val));
 }
+#endif // CONFIG_HTTPD_WS_SUPPORT
 
 } // namespace esphttpdutils
 
